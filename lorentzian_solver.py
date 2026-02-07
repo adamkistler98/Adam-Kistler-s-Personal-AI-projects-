@@ -13,49 +13,36 @@ st.set_page_config(page_title="Lorentzian Metric Solver", layout="wide", page_ic
 
 st.markdown(r"""
 <style>
-    /* 1. Main Background */
     .stApp { background-color: #000000 !important; }
-    
-    /* 2. Text & Headers */
     h1, h2, h3, h4 { color: #00ADB5 !important; font-family: 'Consolas', monospace; }
     p, li, label, .stMarkdown, .stCaption { color: #FFFFFF !important; font-size: 14px; }
     
-    /* 3. THE DARK DROP-DOWN FIX (The "Nuclear" Option) */
-    /* This targets the container, the input, the listbox, and the dropdown itself */
-    div[data-baseweb="select"], div[data-baseweb="input"], input, select, .stSelectbox, .stNumberInput {
+    /* STEALTH INPUT BOXES & DROPDOWNS */
+    div[data-baseweb="select"] > div, div[data-baseweb="input"] > div, input, select {
         background-color: #161B22 !important; 
         color: #00FFF5 !important; 
-    }
-    div[data-baseweb="select"] > div, div[data-baseweb="input"] > div {
-        background-color: #161B22 !important;
-        color: #00FFF5 !important;
         border: 1px solid #00ADB5 !important;
     }
-    /* Targets the pop-up list when you click the dropdown */
     div[data-baseweb="popover"], ul[role="listbox"], li[role="option"] {
         background-color: #161B22 !important;
         color: #00FFF5 !important;
         border: 1px solid #00ADB5 !important;
     }
-    /* Highlight state in the dropdown list */
     li[role="option"]:hover, li[aria-selected="true"] {
         background-color: #1f242d !important;
         color: #00FFF5 !important;
     }
 
-    /* 4. Metrics */
+    /* METRICS & SIDEBAR */
     div[data-testid="stMetricValue"] { color: #00FF41 !important; font-family: 'Consolas', monospace; }
     div[data-testid="stMetricLabel"] { color: #AAAAAA !important; text-transform: uppercase; }
-    
-    /* 5. Sidebar */
     section[data-testid="stSidebar"] { background-color: #050505 !important; border-right: 1px solid #222; }
     
-    /* 6. Buttons */
+    /* STEALTH BUTTONS */
     div.stButton > button, div.stDownloadButton > button { 
         border: 1px solid #00ADB5 !important; color: #00ADB5 !important; background-color: #161B22 !important; 
         width: 100%; border-radius: 2px; font-weight: bold; text-transform: uppercase;
     }
-    div.stButton > button:hover { background-color: #1f242d !important; color: #00FFF5 !important; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -68,7 +55,6 @@ class SpacetimeSolver:
         
         def pde(r, b):
             db_dr = dde.grad.jacobian(b, r)
-            # --- MANIFOLD LOGIC ENGINE ---
             if metric_type == "Morris-Thorne Wormhole":
                 return db_dr - (b / r) * param 
             elif metric_type == "Kerr Black Hole":
@@ -89,7 +75,7 @@ class SpacetimeSolver:
                 return db_dr - (b / (r * param))
             elif metric_type == "Ellis Drainhole":
                 return db_dr - (b / (r**2 + param**2))
-            return db_dr - (b / r) # Einstein-Rosen / Schwarzschild
+            return db_dr - (b / r)
 
         bc_val = r0 if "Warp" not in metric_type else 1.0
         bc = dde.icbc.DirichletBC(geom, lambda x: bc_val, lambda x, on: on and np.isclose(x[0], r0))
@@ -124,7 +110,6 @@ metric_type = st.sidebar.selectbox("Spacetime Metric",
 st.sidebar.markdown(r"### 🧬 TOPOLOGY CONFIG")
 r0 = st.sidebar.number_input(r"Horizon/Throat ($r_0$)", 0.1, 100.0, 5.0, format="%.4f")
 
-# Consolidated Dynamic Parameters
 if metric_type == "Kerr-Newman (Charge + Rotation)":
     q = st.sidebar.slider(r"Charge ($Q$)", 0.0, 5.0, 1.0)
     a = st.sidebar.slider(r"Rotation ($a$)", 0.0, 5.0, 1.0)
@@ -147,7 +132,7 @@ elif metric_type == "Ellis Drainhole":
     param = st.sidebar.slider(r"Flow Intensity ($n$)", 1.0, 10.0, 2.0)
 elif metric_type == "Vaidya (Radiating Star)":
     param = st.sidebar.slider(r"Mass Loss Rate ($\dot{M}$)", 0.0, 1.0, 0.1)
-else: # ER Bridge
+else:
     param = 1.0
 
 st.sidebar.markdown(r"### ⚙️ NUMERICAL KERNEL")
@@ -194,15 +179,19 @@ with d_col:
         ax.tick_params(colors='white'); ax.grid(alpha=0.1)
         st.pyplot(fig)
         
-        # FIXED: Visual Aids
+        # INDENTATION FIX: Added 'pass' to ensure blocks are not empty
         if "Wormhole" in metric_type:
             
+            pass
         elif "Kerr" in metric_type:
             
+            pass
         elif "Charged" in metric_type:
             
+            pass
         elif "Vaidya" in metric_type:
             
+            pass
 
     with tabs[1]:
         st.subheader("Shape Function Profile")
