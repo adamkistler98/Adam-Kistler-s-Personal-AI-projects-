@@ -8,9 +8,9 @@ import plotly.graph_objects as go
 import io
 import time
 
-# --- 1. RESEARCH-GRADE UI & STEALTH CSS ---
+# --- 1. UI CONFIGURATION & NUCLEAR STEALTH CSS ---
 st.set_page_config(
-    page_title="Lorentzian Manifold Metric Solver", 
+    page_title="Lorentzian Metric Solver", 
     layout="wide", 
     page_icon="🌌",
     initial_sidebar_state="expanded"
@@ -118,6 +118,9 @@ class SpacetimeSolver:
                 # params: [Lambda, k, Omega]
                 sign = -1 if "Expansion" in metric_type else 1
                 return db_dr - (b / r) + (sign * params[0] * r**params[1] * params[2])
+            elif "Gott Cosmic String" in metric_type:
+                 # params: [mu (mass per unit length), deficit_angle]
+                 return db_dr - (params[0] * b) # Simplified Conical Singularity
             
             # 4. Exotic Frontiers
             elif metric_type == "Vaidya (Radiating Star)":
@@ -186,7 +189,8 @@ metric_list = [
     "Einstein-Rosen Bridge", 
     "JNW (Naked Singularity)", 
     "Ellis Drainhole",
-    "Bonnor-Melvin (Magnetic Universe)"
+    "Bonnor-Melvin (Magnetic Universe)",
+    "Gott Cosmic String"
 ]
 metric_type = st.sidebar.selectbox("Select Metric Class", metric_list)
 r0 = st.sidebar.number_input(r"Base Scale Radius ($r_0$ or $M$)", 0.1, 1000.0, 5.0, format="%.4f")
@@ -236,6 +240,11 @@ elif "Stringy" in metric_type:
         st.sidebar.slider("Dilaton Field (φ)", 0.0, 5.0, 1.0),
         st.sidebar.slider("Coupling Constant (α)", 0.1, 2.0, 0.5),
         st.sidebar.slider("String Tension (T)", 0.1, 5.0, 1.0)
+    ]
+elif "Cosmic String" in metric_type:
+    st.sidebar.markdown("#### 🎐 Conical Defects")
+    params = [
+        st.sidebar.slider("Mass per unit length (μ)", 0.1, 2.0, 1.0)
     ]
 elif "Naked" in metric_type:
     st.sidebar.markdown("#### ⚠️ Singularity Structure")
@@ -310,18 +319,11 @@ with d_col:
     
     with tabs[0]:
         st.subheader("Energy Density Profile ($\rho$)")
-        
         fig_r, ax_r = plt.subplots(facecolor='black', figsize=(5,4))
         ax_r.set_facecolor('black'); ax_r.plot(r, rho, color='#FF2E63', lw=2)
         ax_r.tick_params(colors='white'); ax_r.grid(alpha=0.1, color='white')
         ax_r.set_xlabel("Radial Distance (r)", color='white')
         st.pyplot(fig_r)
-        
-        # Contextual Visuals with Safety Pass
-        if "Wormhole" in metric_type: ; pass
-        elif "Kerr" in metric_type: ; pass
-        elif "Charged" in metric_type: ; pass
-        else: pass
 
     with tabs[1]:
         st.subheader("Shape Function $b(r)$")
